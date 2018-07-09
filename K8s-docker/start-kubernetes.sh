@@ -3,20 +3,20 @@
 # Run ectd container
 echo "Starting ectd container..."
 sudo docker run -d --name="etcd" -p 4001:4001 gcr.io/google_containers/etcd:3.1.17 /usr/local/bin/etcd \
-				      --data-dir=/var/etcd/data \
-				      --listen-client-urls=http://0.0.0.0:4001 \
-  				      --advertise-client-urls=http://127.0.0.1:4001
+	--data-dir=/var/etcd/data \
+	--listen-client-urls=http://0.0.0.0:4001 \
+  	--advertise-client-urls=http://127.0.0.1:4001
 				      
 # Run apiserver container
 echo "Starting apiserver container..."
 sudo docker run -d -v /var/run/docker.sock:/var/run/docker.sock --net=host --pid=host --name="apiserver" -p 8080:8080 kubernetes:latest /hyperkube kube-apiserver \
-							 --service-cluster-ip-range=10.0.0.1/24 \
-                                                         --etcd-servers=http://127.0.0.1:4001 \
-							 --advertise-address=127.0.0.1 \
-                                                         --bind-address=127.0.0.1 \
-							 --insecure-bind-address=127.0.0.1 \
-							 --admission-control=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ResourceQuota \
-							 --v=4 
+	--service-cluster-ip-range=10.0.0.1/24 \
+    --etcd-servers=http://127.0.0.1:4001 \
+	--advertise-address=127.0.0.1 \
+    --bind-address=127.0.0.1 \
+	--insecure-bind-address=127.0.0.1 \
+	--admission-control=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ResourceQuota \
+	--v=4 
 
 sleep 10
 
